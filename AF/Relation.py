@@ -1,4 +1,4 @@
-from AF.Argument import Argument
+from .Argument import Argument
 
 
 class Relation:
