@@ -14,7 +14,7 @@ class Relation:
             self.arg2.add_supporter(self.arg1)
 
     def __str__(self):
-        return self.arg1.name + (" ~> " if self.attack else " => ") + self.arg2.name + (" (w=" + str(self.weight) + ")" if self.weight != 1 else "")
+        return self.arg1.__str__() + (" ~> " if self.attack else " => ") + self.arg2.__str__() + (" (w=" + str(self.weight) + ")" if self.weight != 1 else "")
 
     def __repr__(self):
         return self.__str__()

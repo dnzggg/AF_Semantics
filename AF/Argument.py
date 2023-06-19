@@ -15,7 +15,7 @@ class Argument:
             self.id = ids
 
     def __str__(self):
-        return str(self.name) + "(sigma=" + str(self.base_score) + ")"
+        return self.name if self.name != "" else str(self.id) + "(sigma=" + str(self.base_score) + ")"
 
     def __repr__(self):
         return self.__str__()
@@ -24,7 +24,7 @@ class Argument:
         return self.name == other.name and self.base_score == other.base_score
 
     def __hash__(self):
-        return hash((self.name, self.base_score))
+        return hash((self.name if self.name != "" else str(self.id), self.base_score))
 
     def get_name(self):
         return self.name

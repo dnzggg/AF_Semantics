@@ -4,6 +4,7 @@ from AF import ArgumentationFramework
 class DFQuAD:
     def __init__(self):
         self.scores = {}
+        self.intermediate_scores = {}
         self.name = __class__.__name__
 
     def __str__(self):
@@ -12,14 +13,16 @@ class DFQuAD:
     def __repr__(self):
         return self.name
 
-    def compute_strength(self, af: ArgumentationFramework):
+    def compute_strength(self, af: ArgumentationFramework, intermediate=False):
         self.scores = {}
+        self.intermediate_scores = {}
 
         converged = False
         while not converged:
             for argument in af.get_arguments():
                 if argument.get_attackers() == [] and argument.get_supporters() == []:
                     self.scores[argument] = argument.get_base_score()
+                    self.intermediate_scores[argument] = {"v_a": 0, "v_s": 0}
                 else:
                     calc = True
                     attack_energy = 1
@@ -39,11 +42,20 @@ class DFQuAD:
                     v_s = 1 - support_energy
 
                     if calc:
+                        if intermediate:
+                            attack_support_of_argument = {"v_a": v_a, "v_s": v_s}
+                            self.intermediate_scores[argument] = attack_support_of_argument
                         v_0 = argument.get_base_score()
-                        self.scores[argument] = v_0 + (0.5 + ((v_s - v_a) / (2 * abs(v_s - v_a))) - v_0) * abs(v_s - v_a)
+                        if v_a == v_s:
+                            self.scores[argument] = v_0
+                        else:
+                            self.scores[argument] = v_0 + (0.5 + ((v_s - v_a) / (2 * abs(v_s - v_a))) - v_0) * abs(v_s - v_a)
 
             if len(self.scores) == len(af.get_arguments()):
                 converged = True
 
     def get_scores(self):
         return self.scores
+
+    def get_intermediate_scores(self):
+        return self.intermediate_scores
