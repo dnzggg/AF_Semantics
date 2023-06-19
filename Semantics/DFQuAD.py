@@ -2,39 +2,48 @@ from AF import ArgumentationFramework
 
 
 class DFQuAD:
-    def __init__(self, af: ArgumentationFramework):
-        self.af = af
+    def __init__(self):
         self.scores = {}
+        self.name = __class__.__name__
 
     def __str__(self):
-        return str(self.af)
+        return self.name
 
     def __repr__(self):
-        return self.__str__()
+        return self.name
 
-    def __eq__(self, other: 'DFQuAD'):
-        return self.af == other.af
+    def compute_strength(self, af: ArgumentationFramework):
+        self.scores = {}
 
-    def __hash__(self):
-        return hash(self.af)
+        converged = False
+        while not converged:
+            for argument in af.get_arguments():
+                if argument.get_attackers() == [] and argument.get_supporters() == []:
+                    self.scores[argument] = argument.get_base_score()
+                else:
+                    calc = True
+                    attack_energy = 1
+                    for attacker in argument.get_attackers():
+                        if (score := self.scores.get(attacker)) is not None:
+                            attack_energy *= (1 - score)
+                        else:
+                            calc = False
+                    v_a = 1 - attack_energy
 
-    def get_af(self):
-        return self.af
+                    support_energy = 1
+                    for supporter in argument.get_supporters():
+                        if (score := self.scores.get(supporter))  is not None:
+                            support_energy *= (1 - score)
+                        else:
+                            calc = False
+                    v_s = 1 - support_energy
 
-    def set_af(self, af):
-        self.af = af
+                    if calc:
+                        v_0 = argument.get_base_score()
+                        self.scores[argument] = v_0 + (0.5 + ((v_s - v_a) / (2 * abs(v_s - v_a))) - v_0) * abs(v_s - v_a)
 
-    def compute_strength(self):
-        for arg in self.af.get_arguments():
-            self.scores[arg] = arg.get_base_score()
-
-        for arg in self.af.get_arguments():
-            for relation in self.af.get_relations():
-                if relation.get_arg2() == arg:
-                    if relation.get_attack():
-                        self.scores[arg] = self.scores[arg] * (1 - self.scores[relation.get_arg1()])
-                    else:
-                        self.scores[arg] = self.scores[arg] * self.scores[relation.get_arg1()]
+            if len(self.scores) == len(af.get_arguments()):
+                converged = True
 
     def get_scores(self):
         return self.scores

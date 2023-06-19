@@ -8,6 +8,11 @@ class Relation:
         self.attack = attack
         self.weight = weight
 
+        if self.attack:
+            self.arg2.add_attacker(self.arg1)
+        else:
+            self.arg2.add_supporter(self.arg1)
+
     def __str__(self):
         return self.arg1.name + (" ~> " if self.attack else " => ") + self.arg2.name + (" (w=" + str(self.weight) + ")" if self.weight != 1 else "")
 
