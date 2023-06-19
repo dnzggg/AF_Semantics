@@ -1,4 +1,3 @@
-from AF import ArgumentationFramework
 
 
 class DFQuAD:
@@ -13,7 +12,7 @@ class DFQuAD:
     def __repr__(self):
         return self.name
 
-    def compute_strength(self, af: ArgumentationFramework, intermediate=False):
+    def compute_strength(self, af, intermediate=False):
         self.scores = {}
         self.intermediate_scores = {}
 
