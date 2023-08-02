@@ -49,3 +49,6 @@ class Argument:
 
     def get_supporters(self):
         return self.supporters
+
+    def get_id(self):
+        return self.id
