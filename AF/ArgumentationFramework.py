@@ -3,7 +3,11 @@ from .Relation import Relation
 
 
 class ArgumentationFramework:
-    def __init__(self, arguments: [Argument], relations: [Relation]):
+    def __init__(self, arguments: {str: Argument} = None, relations: [Relation] = None):
+        if arguments is None:
+            arguments = {}
+        if relations is None:
+            relations = []
         self.arguments = arguments
         self.relations = relations
 
@@ -20,13 +24,18 @@ class ArgumentationFramework:
         return hash((self.arguments, self.relations))
 
     def get_arguments(self):
-        return self.arguments
+        return self.arguments.values()
 
     def get_relations(self):
         return self.relations
 
     def add_argument(self, argument: Argument):
-        self.arguments.append(argument)
+        self.arguments[argument.name] = argument
 
-    def add_relation(self, relation: Relation):
-        self.relations.append(relation)
+    # def add_relation(self, relation: Relation):
+    #     self.relations.append(relation)
+
+    def add_relation(self, argument1: str, argument2: str, attack: bool):
+        arg1 = self.arguments.get(argument1)
+        arg2 = self.arguments.get(argument2)
+        self.relations.append(Relation(arg1, arg2, attack))
